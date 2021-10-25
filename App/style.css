@@ -1,0 +1,9 @@
+body {
+    min-width: 300px;
+}
+
+.container {
+    min-height: 300px;
+    display: flex;
+    justify-content: center;
+}
