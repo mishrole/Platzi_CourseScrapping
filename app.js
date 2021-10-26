@@ -21,9 +21,9 @@ const autoScroll = async (scrollTo) => {
         top: element.scrollHeight,
         left: 0,
         behavior: 'smooth'
-    })
+    });
 
-    console.log(element.scrollHeight)
+    //console.log(element.scrollHeight);
     
     /*while(element) {
         const maxScrollTop = document.body.clientHeight - window.innerHeight;
@@ -57,16 +57,11 @@ const scrapingCourse = async () => {
         return false
     }
 
-    const transformTime = (time) => {
-        const timeExtract = `00:${time.slice(0, time.length - 4)}`
-        const target = new Date(`1970-01-01 ${timeExtract}`)
-        return target
-        //console.log(`Minutes: ${target.getMinutes()} | Seconds: ${target.getSeconds()}`)
-    }
-
     const getMaterialData = async () => {
         const materialConceptData = document.querySelectorAll('.Material-concept');
-        let data = [];
+        const courseTitle = document.querySelector('.CourseDetail-left-title').textContent;
+
+        let courseData = [];
 
         materialConceptData.forEach(concept => {
             const conceptTitle =  concept.querySelector('.Material-title').innerHTML;
@@ -81,26 +76,40 @@ const scrapingCourse = async () => {
                 const contentTitle = content.querySelector('.MaterialItem-copy-title').innerHTML;
                 const contentTime = content.querySelector('.MaterialItem-copy-time').textContent;
 
-                conceptData.items.push({title: contentTitle, time: contentTime})
+                conceptData.items.push({title: contentTitle, time: contentTime});
 
             });
             
-            data.push(conceptData)
+            courseData.push(conceptData);
 
         });
         
-        return data
+        return [{courseTitle, courseData}]
     }
 
-    await autoScroll('.TimelineLeft');
-    wait(1500);
+    /*const setLocalData = async (courseInformation) => {
+        let platziCourse;
+
+        if(window.localStorage.getItem('platziCourseData') !== null) {
+            platziCourse = await JSON.parse(window.localStorage.getItem('platziCourseData'));
+        } else {
+            platziCourse = [];
+        }
+
+        platziCourse = [ ...platziCourse, { courseInformation } ]
+        window.localStorage.setItem('platziCourseData', JSON.stringify(platziCourse));
+    }*/
     
     if(hasCourseTabsContent) {
 
+        await autoScroll('.TimelineLeft');
         const courseInformation = await getMaterialData();
         console.log(courseInformation)
-        
+        return courseInformation
+
     }
+
+    return false
 
 }
 
@@ -108,23 +117,26 @@ const scrapingCourse = async () => {
     chrome.runtime.onConnect.addListener(async function(port) {
         port.onMessage.addListener(async function(message) {
             const { action } = message;
-            // Receive scanning from scrap.js
-            if(action == 'scanning') {
-                console.log('scrap.js scanning send endScan')
+            // Receive from scrap.js
+            if(action == 'start') {
 
                 try {
-                    await scrapingCourse();
-                    alert('Funciona')
+                    const scanResult = await scrapingCourse();
+
+                    if(scanResult) {
+                        console.log('Scaneando temario');
+                    } else {
+                        console.log('No hay temario');
+                    }
                     
-                    // Send endScan to scrap.js
-                    port.postMessage({action: 'endScan'});
+                    // Send to scrap.js
+                    port.postMessage({action: 'sendResult', data: scanResult});
                 } catch (error) {
-                    console.error(error)
+                    console.error(error);
                 }
-            }
-            
-            if(action == 'goToURL') {
-                console.log('scrap.js receive goToUrl')
+
+            } else if(action == 'goToURL') {
+                console.log('scrap.js receive goToURL with data');
             }
         })
     });

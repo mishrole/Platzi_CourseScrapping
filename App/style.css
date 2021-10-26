@@ -3,7 +3,20 @@ body {
 }
 
 .container {
-    min-height: 300px;
+    max-height: 300px;
+}
+
+pre, .courses {
+    max-width: 100%;
+}
+
+.button__container {
     display: flex;
     justify-content: center;
+}
+
+.button__container > button {
+    padding: 0.5em;
+    flex-grow: 1;
+    margin: 1em 2em;
 }
