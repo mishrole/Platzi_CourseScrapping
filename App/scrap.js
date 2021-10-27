@@ -80,52 +80,47 @@ const transformTime = (time) => {
     btnSearch.addEventListener('click', async () => {
 
         await chrome.tabs.query({ active: true, currentWindow: true }, (result) => {
-            console.log("result trae todo de la ventana principal", result[0].id)
+            // console.log("result trae todo de la ventana principal", result)
+
+            // if(result[0].url) {
+            //     console.log(result[0].url);
+            //     chrome.runtime.getManifest()['content_scripts'][0]['matches'].forEach(item => {
+            //         console.log(item)
+            //     })
+            // }
+
             if(chrome.runtime.lastError) {
                 console.log("ERROR EN EXTENSIÓN")
             } else {
 
-                if(result[0]) {
+                if(result[0].url.includes('platzi.com/clases/')) {
                     const port = chrome.tabs.connect(result[0].id);
-                    console.log(port)
+                    // console.log(port)
     
                     // chrome.tabs.sendMessage(result[0].id,"test1")
     
-                    if(port) {
-                        console.log("port", port)
-                        // -> Send to app.js
-                        port.postMessage({action: 'start'});
+                    // -> Send to app.js
+                    port.postMessage({action: 'start'});
                         
-                        port.onMessage.addListener(function (response) {
-                            const { action, data } = response;
-            
-                            // <- Receive from app.js
-                            if(action == 'sendResult') {
-                                setLocalData(data);
-            
-                                if(data) {
-                                    // -> Send to app.js
-                                    port.postMessage({action: 'goToURL'});
-                                }
-            
-                            } else if(action === 'test2') {
-                                console.log("test2 scrap.js - recibido")
+                    port.onMessage.addListener(function (response) {
+                        const { action, data } = response;
+        
+                        // <- Receive from app.js
+                        if(action == 'sendResult') {
+                            setLocalData(data);
+        
+                            if(data) {
+                                // -> Send to app.js
+                                port.postMessage({action: 'goToURL'});
                             }
-                        });
-                    }
+        
+                        } else if(action === 'test2') {
+                            console.log("test2 scrap.js - recibido")
+                        }
+                    });
                 }
-
-                
-            
-
-                
             }
-            
         });
-
-        
-        
-        
     });
 
     /* btnOpen.addEventListener('click', async () => {
