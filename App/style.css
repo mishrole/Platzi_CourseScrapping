@@ -1,13 +1,74 @@
+:root {
+    --primary-color: #121f3d;
+    --primary-color-contrast: #121f3d80;
+    --primary-color-light: #24385b;
+
+    --secondary-color: #98ca3f;
+    --secondary-color-contrast: #77a61e;
+    --secondary-color-light: #c1df8b;
+
+    --cta-color: #33b1ff;
+
+    /* --primary-color-contrast: #273b47; */
+
+    --black-color: #03091e;
+    --gray-color: #8da2c0;
+    --white-color: #eff3f8;
+
+    --popup-size: 300px;
+
+    --scrollbar-thumb: transparent;
+}
+
 body {
-    min-width: 300px;
+    background-color: var(--primary-color);
+    font-family: 'Roboto', sans-serif;
+    height: 400px;
+    max-height: 400px;
+    min-width: var(--popup-size);
+}
+
+.title {
+    color: var(--white-color);
+    font-size: 1.2em;
+    font-weight: bold;
+    letter-spacing: .5px;
+    margin: 1.5em 0;
 }
 
 .container {
-    max-height: 300px;
+    max-height: var(--popup-size);
 }
 
-pre, .courses {
+.data {
+    background-color: var(--primary-color-light);
+    color: var(--white-color);
+    height: 300px;
     max-width: 100%;
+    overflow-y: scroll;
+    white-space: pre-wrap;       /* Since CSS 2.1 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+
+.data::-webkit-scrollbar {
+    width: 10px;
+}
+
+.data::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 10px;
+}
+
+.data::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 10px;
+}
+
+.data::-webkit-scrollbar-thumb:hover {
+    background: #637b9d;
 }
 
 .button__container {
@@ -15,8 +76,113 @@ pre, .courses {
     justify-content: center;
 }
 
-.button__container > button {
-    padding: 0.5em;
+.cta__button {
+    background-color: transparent;
+    border: 1px dashed var(--cta-color);
+    border-radius: 12px;
+    color: var(--cta-color);
+    cursor: pointer;
     flex-grow: 1;
-    margin: 1em 2em;
+    padding: 1.5em 0.5em;
 }
+
+.stats {
+    border: 1px solid var(--primary-color-light);
+    border-radius: 8px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(150px, 1fr));
+    min-width: var(--popup-size);
+    width: 100%;
+}
+
+.stats__card {
+    display: grid;
+    grid-auto-rows: 1fr;
+}
+
+.stats__card__content {
+    align-items: center;
+    color: var(--gray-color);
+    display: flex;
+    gap: 1em;
+    padding: 1em;
+}
+
+.stats__card__content > div > p {
+    color: var(--white-color);
+}
+
+.divider {
+    border-bottom: 1px solid transparent;
+    margin-top: 1em;
+}
+
+.icon-time,
+.icon-courses {
+    color: var(--secondary-color);
+}
+
+@font-face {
+    font-display: block;
+    font-family: 'icomoon';
+    font-style: normal;
+    font-weight: normal;
+    src:  url('./fonts/icomoon.eot?k2kaer');
+    src:  url('./fonts/icomoon.eot?k2kaer#iefix') format('embedded-opentype'),
+      url('./fonts/icomoon.ttf?k2kaer') format('truetype'),
+      url('./fonts/icomoon.woff?k2kaer') format('woff'),
+      url('./fonts/icomoon.svg?k2kaer#icomoon') format('svg');
+}
+
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('./fonts/Roboto-Regular.ttf');
+}
+
+[class^="icon-"], [class*=" icon-"] {
+/* use !important to prevent issues with browser extensions that change fonts */
+font-family: 'icomoon' !important;
+font-style: normal;
+font-variant: normal;
+font-weight: normal;
+line-height: 1;
+/*speak: never;*/
+text-transform: none;
+
+/* Better Font Rendering =========== */
+-moz-osx-font-smoothing: grayscale;
+-webkit-font-smoothing: antialiased;
+}
+
+.icon-courses:before {
+    content: "\e9d2";
+}
+
+.icon-time:before {
+    content: "\e94e";
+}
+
+/*
+// width
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+// Track
+::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 10px;
+}
+
+// Handle
+::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 10px;
+}
+
+// Handle on hover
+::-webkit-scrollbar-thumb:hover {
+    background: #637b9d;
+}
+*/

@@ -23,22 +23,6 @@ const autoScroll = async (scrollTo) => {
         behavior: 'smooth'
     });
 
-    //console.log(element.scrollHeight);
-    
-    /*while(element) {
-        const maxScrollTop = document.body.clientHeight - window.innerHeight;
-        const elementScrollTop = document.querySelector(scrollTo).offsetHeight;
-        const currentScrollTop = window.scrollY;
-
-        if(maxScrollTop == currentScrollTop || elementScrollTop <= currentScrollTop)
-        break;
-
-        await wait(32);
-
-        const newScrollTop = Math.min(currentScrollTop + 20, maxScrollTop);
-        window.scrollTo(0, newScrollTop);
-    }*/
-
     return new Promise(function(resolve) {
         resolve();
     });
@@ -86,19 +70,6 @@ const scrapingCourse = async () => {
         
         return [{courseTitle, courseData}]
     }
-
-    /*const setLocalData = async (courseInformation) => {
-        let platziCourse;
-
-        if(window.localStorage.getItem('platziCourseData') !== null) {
-            platziCourse = await JSON.parse(window.localStorage.getItem('platziCourseData'));
-        } else {
-            platziCourse = [];
-        }
-
-        platziCourse = [ ...platziCourse, { courseInformation } ]
-        window.localStorage.setItem('platziCourseData', JSON.stringify(platziCourse));
-    }*/
     
     if(hasCourseTabsContent) {
 
@@ -114,32 +85,78 @@ const scrapingCourse = async () => {
 }
 
 (async function() {
+    
+    // await chrome.tabs.query({ active: true, lastFocusedWindow: true }, tabs => {
+    //     console.log("url", tabs[0].url);
+    // });
+
     chrome.runtime.onConnect.addListener(async function(port) {
-        port.onMessage.addListener(async function(message) {
-            const { action } = message;
-            // Receive from scrap.js
-            if(action == 'start') {
-
-                try {
-                    const scanResult = await scrapingCourse();
-
-                    if(scanResult) {
-                        console.log('Scaneando temario');
-                    } else {
-                        console.log('No hay temario');
+        //console.log("manifest",chrome.runtime.getManifest())
+        if(chrome.runtime.lastError) {
+            console.log("ERROR EN PRINCIPAL")
+        } else {
+            port.onMessage.addListener(async function(message) {
+                const { action } = message;
+                // Receive from scrap.js
+                if(action == 'start') {
+    
+                    try {
+                        const scanResult = await scrapingCourse();
+    
+                        if(scanResult) {
+                            console.log('Scaneando temario 5');
+                        } else {
+                            console.log('No hay temario');
+                        }
+                        
+                        // Send to scrap.js
+                        port.postMessage({action: 'sendResult', data: scanResult});
+                        
+                    } catch (error) {
+                        console.log(error);
                     }
-                    
-                    // Send to scrap.js
-                    port.postMessage({action: 'sendResult', data: scanResult});
-                } catch (error) {
-                    console.error(error);
+    
+                } else if(action == 'goToURL') {
+                    console.log('scrap.js receive goToURL with data');
                 }
+                    // } else if(action == 'open') {
+                //     console.log("app.js open")
+    
+    
+                    
+                // }
+            })
+        }
 
-            } else if(action == 'goToURL') {
-                console.log('scrap.js receive goToURL with data');
-            }
-        })
+        
     });
+
+    // chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    //     if(message === 'test1') {
+    //         //const scanResult = await scrapingCourse();
+    //         console.log("app.js test1 recibido")
+    //         chrome.runtime.sendMessage()
+    //     }
+    // })
+
+    // chrome.runtime.onMessage.addListener(async function(request) {
+    //     if(chrome.runtime.lastError) {
+    //         console.warn("Error en app.js")
+    //     } else {
+    //     //     console.log("message from app.js")
+    //     // console.log(request)
+    //         if(request == "start") {
+    //             const scanResult = await scrapingCourse();
+    //             if(scanResult) {
+    //                 console.log('Scaneando temario 6');
+    //             } else {
+    //                 console.log('No hay temario');
+    //             }
+    //         }
+
+    //         chrome.runtime.sendMessage("sendResult")
+    //     }
+    // })
 
     /*try {
         await scrapingCourse();

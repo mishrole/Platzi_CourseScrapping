@@ -1,5 +1,6 @@
 const btnSearch = document.querySelector('#btnSearch');
 const code = document.querySelector('.data');
+const btnOpen = document.querySelector('#btnOpen');
     
 const showPreviousData = async () => {
 
@@ -34,7 +35,7 @@ const isCourseDuplicated = (savedCourses, newCourse) => {
 
 const setLocalData = async (newCourse) => {
 
-    await chrome.storage.local.get(['platziCourseData'], function (result) {
+    await chrome.storage.local.get(['platziCourseData'], (result) => {
 
         let dataResult;
 
@@ -55,6 +56,12 @@ const setLocalData = async (newCourse) => {
         code.innerHTML = JSON.stringify(dataResult, undefined, 2);
         console.log(dataResult)
 
+        // if(chrome.runtime.lastError) {
+        //     console.error(chrome.runtime.lastError.message);
+        // } else {
+            
+        // }
+
     });
 
 }
@@ -72,26 +79,80 @@ const transformTime = (time) => {
 
     btnSearch.addEventListener('click', async () => {
 
-        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-        const port = chrome.tabs.connect(tab.id);
-        // -> Send to app.js
-        port.postMessage({action: 'start'});
-        
-        port.onMessage.addListener(function (response) {
-            const { action, data } = response;
+        await chrome.tabs.query({ active: true, currentWindow: true }, (result) => {
+            console.log("result trae todo de la ventana principal", result[0].id)
+            if(chrome.runtime.lastError) {
+                console.log("ERROR EN EXTENSIÓN")
+            } else {
 
-            // <- Receive from app.js
-            if(action == 'sendResult') {
-                setLocalData(data);
-
-                if(data) {
-                    // -> Send to app.js
-                    port.postMessage({action: 'goToURL'});
+                if(result[0]) {
+                    const port = chrome.tabs.connect(result[0].id);
+                    console.log(port)
+    
+                    // chrome.tabs.sendMessage(result[0].id,"test1")
+    
+                    if(port) {
+                        console.log("port", port)
+                        // -> Send to app.js
+                        port.postMessage({action: 'start'});
+                        
+                        port.onMessage.addListener(function (response) {
+                            const { action, data } = response;
+            
+                            // <- Receive from app.js
+                            if(action == 'sendResult') {
+                                setLocalData(data);
+            
+                                if(data) {
+                                    // -> Send to app.js
+                                    port.postMessage({action: 'goToURL'});
+                                }
+            
+                            } else if(action === 'test2') {
+                                console.log("test2 scrap.js - recibido")
+                            }
+                        });
+                    }
                 }
 
+                
+            
+
+                
             }
+            
         });
+
+        
+        
         
     });
+
+    /* btnOpen.addEventListener('click', async () => {
+        
+    //     //const [tab] = await chrome.tabs.query({ active: true, currentWindow: true});
+    //     // const port = chrome.tabs.connect(tab.id);    
+
+    //     // // -> Send to app.js
+    //     // port.postMessage({action: 'open'})
+
+    //     // Open new Window
+    //     await chrome.tabs.create({
+
+    //         url: chrome.runtime.getURL("./App/index.html")
+    //     });
+        
+    //     window.close();
+    });*/
+
+
+
+    code.addEventListener('mouseover', () => {
+        document.documentElement.style.setProperty('--scrollbar-thumb', '#637b9d');
+    });
+
+    code.addEventListener('mouseout', () => {
+        document.documentElement.style.setProperty('--scrollbar-thumb', 'transparent');
+    })
 
 })();
