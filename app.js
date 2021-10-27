@@ -17,11 +17,13 @@ const wait = function (miliseconds) {
 const autoScroll = async (scrollTo) => {
     const element = document.querySelector(scrollTo);
 
-    window.scrollTo({
-        top: element.scrollHeight,
-        left: 0,
-        behavior: 'smooth'
-    });
+    if(element) {
+        window.scrollTo({
+            top: element.scrollHeight,
+            left: 0,
+            behavior: 'smooth'
+        });
+    }
 
     return new Promise(function(resolve) {
         resolve();
@@ -75,7 +77,7 @@ const scrapingCourse = async () => {
 
         await autoScroll('.TimelineLeft');
         const courseInformation = await getMaterialData();
-        console.log(courseInformation)
+        // console.log(courseInformation)
         return courseInformation
 
     }
@@ -86,10 +88,6 @@ const scrapingCourse = async () => {
 
 (async function() {
     
-    // await chrome.tabs.query({ active: true, lastFocusedWindow: true }, tabs => {
-    //     console.log("url", tabs[0].url);
-    // });
-
     chrome.runtime.onConnect.addListener(async function(port) {
         //console.log("manifest",chrome.runtime.getManifest())
         if(chrome.runtime.lastError) {
@@ -101,17 +99,18 @@ const scrapingCourse = async () => {
                 if(action == 'start') {
     
                     try {
-                        const scanResult = await scrapingCourse();
+                        if(document.querySelector('.Timeline')) { // Important
+                            const scanResult = await scrapingCourse();
     
-                        if(scanResult) {
-                            console.log('Scaneando temario 5');
+                            if(scanResult) {
+                                console.log('Scaneando temario 5');
+                            }
+                            // Send to scrap.js
+                            port.postMessage({action: 'sendResult', data: scanResult});
                         } else {
-                            console.log('No hay temario');
+                            alert('Oops! No platzi course Timeline');
                         }
-                        
-                        // Send to scrap.js
-                        port.postMessage({action: 'sendResult', data: scanResult});
-                        
+
                     } catch (error) {
                         console.log(error);
                     }
@@ -119,51 +118,12 @@ const scrapingCourse = async () => {
                 } else if(action == 'goToURL') {
                     console.log('scrap.js receive goToURL with data');
                 }
-                    // } else if(action == 'open') {
-                //     console.log("app.js open")
-    
-    
-                    
-                // }
             })
         }
 
         
     });
 
-    // chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    //     if(message === 'test1') {
-    //         //const scanResult = await scrapingCourse();
-    //         console.log("app.js test1 recibido")
-    //         chrome.runtime.sendMessage()
-    //     }
-    // })
-
-    // chrome.runtime.onMessage.addListener(async function(request) {
-    //     if(chrome.runtime.lastError) {
-    //         console.warn("Error en app.js")
-    //     } else {
-    //     //     console.log("message from app.js")
-    //     // console.log(request)
-    //         if(request == "start") {
-    //             const scanResult = await scrapingCourse();
-    //             if(scanResult) {
-    //                 console.log('Scaneando temario 6');
-    //             } else {
-    //                 console.log('No hay temario');
-    //             }
-    //         }
-
-    //         chrome.runtime.sendMessage("sendResult")
-    //     }
-    // })
-
-    /*try {
-        await scrapingCourse();
-        alert('Funciona')
-    } catch (error) {
-        console.error(error)
-    }*/
 })();
 
 /*

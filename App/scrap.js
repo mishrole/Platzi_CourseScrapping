@@ -56,12 +56,6 @@ const setLocalData = async (newCourse) => {
         code.innerHTML = JSON.stringify(dataResult, undefined, 2);
         console.log(dataResult)
 
-        // if(chrome.runtime.lastError) {
-        //     console.error(chrome.runtime.lastError.message);
-        // } else {
-            
-        // }
-
     });
 
 }
@@ -80,23 +74,13 @@ const transformTime = (time) => {
     btnSearch.addEventListener('click', async () => {
 
         await chrome.tabs.query({ active: true, currentWindow: true }, (result) => {
-            // console.log("result trae todo de la ventana principal", result)
-
-            // if(result[0].url) {
-            //     console.log(result[0].url);
-            //     chrome.runtime.getManifest()['content_scripts'][0]['matches'].forEach(item => {
-            //         console.log(item)
-            //     })
-            // }
 
             if(chrome.runtime.lastError) {
                 console.log("ERROR EN EXTENSIÓN")
             } else {
 
-                if(result[0].url.includes('platzi.com/clases/')) {
+                if(result[0].url.includes('platzi.com/clases/')) { // Important
                     const port = chrome.tabs.connect(result[0].id);
-                    // console.log(port)
-    
                     // chrome.tabs.sendMessage(result[0].id,"test1")
     
                     // -> Send to app.js
@@ -118,29 +102,12 @@ const transformTime = (time) => {
                             console.log("test2 scrap.js - recibido")
                         }
                     });
+                } else {
+                    alert('Oops! No platzi course information')
                 }
             }
         });
     });
-
-    /* btnOpen.addEventListener('click', async () => {
-        
-    //     //const [tab] = await chrome.tabs.query({ active: true, currentWindow: true});
-    //     // const port = chrome.tabs.connect(tab.id);    
-
-    //     // // -> Send to app.js
-    //     // port.postMessage({action: 'open'})
-
-    //     // Open new Window
-    //     await chrome.tabs.create({
-
-    //         url: chrome.runtime.getURL("./App/index.html")
-    //     });
-        
-    //     window.close();
-    });*/
-
-
 
     code.addEventListener('mouseover', () => {
         document.documentElement.style.setProperty('--scrollbar-thumb', '#637b9d');
