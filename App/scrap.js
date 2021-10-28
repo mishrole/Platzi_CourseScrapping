@@ -1,4 +1,4 @@
-const btnSearch = document.querySelector('#btnSearch');
+const btnScan = document.querySelector('#btnScan');
 const code = document.querySelector('.data');
 const btnOpen = document.querySelector('#btnOpen');
     
@@ -71,7 +71,7 @@ const transformTime = (time) => {
 
 ( async () => {
 
-    btnSearch.addEventListener('click', async () => {
+    btnScan.addEventListener('click', async () => {
 
         await chrome.tabs.query({ active: true, currentWindow: true }, (result) => {
 

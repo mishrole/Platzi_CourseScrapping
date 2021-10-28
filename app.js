@@ -45,7 +45,10 @@ const scrapingCourse = async () => {
 
     const getMaterialData = async () => {
         const materialConceptData = document.querySelectorAll('.Material-concept');
-        const courseTitle = document.querySelector('.CourseDetail-left-title').textContent;
+        const courseTitle = document.querySelector('.CourseDetail-left-title').textContent.replace("Clases del Curso de ","");;
+        const courseBadge = document.querySelector('.CourseDetail-left-figure > img').src;
+        const courseTeacherBadge = document.querySelector('.TeacherList-badge > img').src;
+        const courseTeacherName = document.querySelector('.TeacherList-full-name').textContent;
 
         let courseData = [];
 
@@ -70,7 +73,7 @@ const scrapingCourse = async () => {
 
         });
         
-        return [{courseTitle, courseData}]
+        return [{courseBadge, courseData, courseTeacher: {courseTeacherBadge, courseTeacherName}, courseTitle }]
     }
     
     if(hasCourseTabsContent) {

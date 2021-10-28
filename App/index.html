@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,11 +8,18 @@
     <title>Platzi Course Scrapping</title>
     <link rel="stylesheet" href="./style.css">
 </head>
+
 <body>
-    <div class="navbar">
+    <div class="search">
         <!-- <button id="btnOpen">Open</button> -->
+        <div class="search__container">
+            <input type="text" id="searchInput" class="search__input" placeholder="Search...">
+            <button id="btnSearch" class="btn__search">
+                <span class="icon-search"></span>
+            </button>
+        </div>
     </div>
-    <div class="stats">
+    <!-- <div class="stats">
         <div class="stats__card">
             <div class="stats__card__content">
                 <i class="icon-time"></i>
@@ -28,15 +36,28 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
     <div class="container">
-        <p class="title">Keep learning</p>
+        <p class="title">Courses</p>
         <div class="button__container">
-            <button class="cta__button" id="btnSearch">Get Course Info</button>
+            <button class="cta__button" id="btnScan">Get Course Info</button>
         </div>
         <div class="courses"></div>
-        <pre class="data"></pre>
     </div>
+    <pre class="data"></pre>
+    <!-- <div class="menu__container">
+        <div class="button__container">
+            <button class="cta__button" id="btnScan">Get Course Info</button>
+        </div>
+    </div> -->
+    <!-- <div class="menu__container">
+        <div class="menu__options">
+            <div class="menu__options__item"><a href="#">Link1</a></div>
+            <div class="menu__options__item"><a href="#">Link2</a></div>
+            <div class="menu__options__item"><a href="#">Link3</a></div>
+        </div>
+    </div> -->
     <script src="./scrap.js"></script>
 </body>
+
 </html>
