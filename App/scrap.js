@@ -1,12 +1,14 @@
 const btnScan = document.querySelector('#btnScan');
 const code = document.querySelector('.data');
 const btnOpen = document.querySelector('#btnOpen');
+const coursesContainer = document.querySelector('.courses');
     
 const showPreviousData = async () => {
 
     await chrome.storage.local.get(['platziCourseData'], function(result) {
         if(Object.keys(result).length > 0) {
             code.innerHTML = JSON.stringify(result, undefined, 2);
+            showCourses(result);
         } else {
             code.innerText = '¡Oops! Parece que no tienes cursos';
         }
@@ -33,6 +35,15 @@ const isCourseDuplicated = (savedCourses, newCourse) => {
     return false
 }
 
+const showCourses = (data) => {
+    const platziCourseData = data['platziCourseData'];
+    platziCourseData.forEach(course => {
+        const title = document.createElement('p');
+        title.innerHTML = course.courseTitle
+        coursesContainer.appendChild(title)
+    });
+}
+
 const setLocalData = async (newCourse) => {
 
     await chrome.storage.local.get(['platziCourseData'], (result) => {
@@ -54,6 +65,7 @@ const setLocalData = async (newCourse) => {
         }
 
         code.innerHTML = JSON.stringify(dataResult, undefined, 2);
+        showCourses(dataResult);
         console.log(dataResult)
 
     });

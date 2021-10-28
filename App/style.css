@@ -29,6 +29,10 @@ body {
     margin: 0 1em;
 }
 
+.courses {
+  color: var(--white-color);
+}
+
 .title {
     color: var(--white-color);
     font-size: 1.2em;
