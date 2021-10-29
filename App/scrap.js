@@ -37,10 +37,29 @@ const isCourseDuplicated = (savedCourses, newCourse) => {
 
 const showCourses = (data) => {
     const platziCourseData = data['platziCourseData'];
+    coursesContainer.innerHTML = "";
+
     platziCourseData.forEach(course => {
-        const title = document.createElement('p');
-        title.innerHTML = course.courseTitle
-        coursesContainer.appendChild(title)
+        const courseCard = document.createElement('div');
+        courseCard.className = "courses__item";
+
+        const courseFigure = document.createElement('div');
+        courseFigure.className = "courses__item__figure";
+        const courseBadgeContainer = document.createElement('div');
+        courseBadgeContainer.className = "courses__item__badge";
+        const courseBadge = document.createElement('img');
+        courseBadge.src = course.courseBadge;
+        courseBadgeContainer.appendChild(courseBadge);
+        courseFigure.appendChild(courseBadgeContainer);
+
+        const courseTitleContainer = document.createElement('div');
+        courseTitleContainer.className = "courses__item__title";
+        const courseTitle = document.createElement('p');
+        courseTitle.textContent = course.courseTitle;
+        courseTitleContainer.appendChild(courseTitle);
+
+        courseCard.append(courseBadgeContainer, courseTitleContainer);
+        coursesContainer.appendChild(courseCard);
     });
 }
 
